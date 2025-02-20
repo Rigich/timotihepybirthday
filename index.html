@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>З Днем Народження, Тімоті!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fbeee6;
+            padding: 50px;
+            animation: fadeIn 2s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        h1 {
+            color: #ff6f61;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        p {
+            font-size: 20px;
+            color: #333;
+            animation: slideIn 1.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .cake {
+            font-size: 50px;
+            animation: rotate 3s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .story-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: white;
+            transition: width 10s linear;
+        }
+        .story img {
+            width: 90vw;
+            height: 90vh;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: opacity 1s ease-in-out;
+        }
+        .fade-out {
+            opacity: 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .view-button {
+            background-color: #ff6f61;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .view-button:hover {
+            background-color: #e65a50;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 З Днем Народження, Тімоті! 🎂</h1>
+    <p>Бажаємо щастя, здоров'я, здійснення мрій та яскравих моментів у житті!</p>
+    <p class="cake">🎂🎁🎈</p>
+    
+    <button class="view-button" onclick="startStories()">Переглянути фото</button>
+    
+    <div id="story-container" class="story-container hidden" onclick="handleClick(event)">
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <img id="story-image" src="" alt="Фото">
+    </div>
+    
+    <audio id="audio" src="s.mp3"></audio>
+    
+    <script>
+        let images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+        let currentImageIndex = 0;
+        let timer;
+        
+        function showStory(index) {
+            if (index < 0 || index >= images.length) {
+                document.getElementById("story-container").classList.add("hidden");
+                return;
+            }
+            let storyImage = document.getElementById("story-image");
+            let progress = document.getElementById("progress");
+            
+            // Заміна зображення
+            storyImage.classList.add("fade-out");
+            clearTimeout(timer);
+            
+            // Скидання прогрес-бару
+            progress.style.width = "0%";
+            
+            setTimeout(() => {
+                storyImage.src = images[index];
+                storyImage.classList.remove("fade-out");
+                
+                // Оновлюємо прогрес-бар
+                progress.style.width = "100%";
+                
+                // Встановлюємо наступну історію після 10 секунд
+                currentImageIndex = index;
+                timer = setTimeout(() => showStory(index + 1), 10000);
+            }, 500);
+        }
+        
+        function startStories() {
+            document.getElementById("story-container").classList.remove("hidden");
+            document.getElementById("audio").play();
+            showStory(0);
+        }
+        
+        function handleClick(event) {
+            let screenWidth = window.innerWidth;
+            if (event.clientX < screenWidth / 2) {
+                showStory(currentImageIndex - 1);
+            } else {
+                showStory(currentImageIndex + 1);
+            }
+        }
+    </script>
+</body>
+</html>
