@@ -2,52 +2,45 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>З Днем Народження, Тімоті!</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #fbeee6;
             padding: 50px;
-            animation: fadeIn 2s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         h1 {
             color: #ff6f61;
-            animation: bounce 2s infinite;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .view-button {
+            background-color: #ff6f61;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
-        p {
-            font-size: 20px;
-            color: #333;
-            animation: slideIn 1.5s ease-out;
+        .view-button:hover {
+            background-color: #e65a50;
         }
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .cake {
-            font-size: 50px;
-            animation: rotate 3s linear infinite;
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+
+        /* Повноекранний режим */
         .story-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
+            background: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -68,39 +61,28 @@
             background: white;
             transition: width 10s linear;
         }
-        .story img {
-            width: 90vw;
-            height: 90vh;
-            object-fit: cover;
-            border-radius: 10px;
-            transition: opacity 1s ease-in-out;
+        #story-image {
+            width: 100vw;         /* По ширине экрана */
+            height: 75vh;         /* 75% высоты экрана */
+            object-fit: contain;  /* Показывает всё изображение без обрезки */
+            position: absolute;
+            top: 50%;             /* Центрируем */
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
+        
+        
+        
         .fade-out {
             opacity: 0;
         }
         .hidden {
             display: none;
         }
-        .view-button {
-            background-color: #ff6f61;
-            color: white;
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .view-button:hover {
-            background-color: #e65a50;
-        }
     </style>
 </head>
 <body>
     <h1>🎉 З Днем Народження, Тімоті! 🎂</h1>
-    <p>Бажаємо щастя, здоров'я, здійснення мрій та яскравих моментів у житті!</p>
-    <p class="cake">🎂🎁🎈</p>
-    
     <button class="view-button" onclick="startStories()">Переглянути фото</button>
     
     <div id="story-container" class="story-container hidden" onclick="handleClick(event)">
@@ -113,7 +95,7 @@
     <audio id="audio" src="s.mp3"></audio>
     
     <script>
-        let images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+        let images = ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg", "photo6.jpg", "photo7.jpg"];
         let currentImageIndex = 0;
         let timer;
         
@@ -125,21 +107,14 @@
             let storyImage = document.getElementById("story-image");
             let progress = document.getElementById("progress");
             
-            // Заміна зображення
             storyImage.classList.add("fade-out");
             clearTimeout(timer);
-            
-            // Скидання прогрес-бару
             progress.style.width = "0%";
             
             setTimeout(() => {
                 storyImage.src = images[index];
                 storyImage.classList.remove("fade-out");
-                
-                // Оновлюємо прогрес-бар
                 progress.style.width = "100%";
-                
-                // Встановлюємо наступну історію після 10 секунд
                 currentImageIndex = index;
                 timer = setTimeout(() => showStory(index + 1), 10000);
             }, 500);
@@ -150,7 +125,7 @@
             document.getElementById("audio").play();
             showStory(0);
         }
-        
+
         function handleClick(event) {
             let screenWidth = window.innerWidth;
             if (event.clientX < screenWidth / 2) {
@@ -159,6 +134,22 @@
                 showStory(currentImageIndex + 1);
             }
         }
+
+        // Додаємо сенсорне управління (свайпи)
+        let touchStartX = 0;
+
+        document.getElementById("story-container").addEventListener("touchstart", function(event) {
+            touchStartX = event.touches[0].clientX;
+        });
+
+        document.getElementById("story-container").addEventListener("touchend", function(event) {
+            let touchEndX = event.changedTouches[0].clientX;
+            if (touchEndX < touchStartX) {
+                showStory(currentImageIndex + 1);
+            } else if (touchEndX > touchStartX) {
+                showStory(currentImageIndex - 1);
+            }
+        });
     </script>
 </body>
 </html>
